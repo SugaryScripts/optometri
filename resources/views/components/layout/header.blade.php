@@ -77,7 +77,7 @@
                         data-bs-auto-close="outside"
                         aria-expanded="false"
                     >
-                        <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar" />
+                        <img src="{{ Auth::user()->staff->profile_photo_url }}" alt="user-image" class="user-avtar" />
                     </a>
                     <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                         <div class="dropdown-header d-flex align-items-center justify-content-between">
@@ -87,11 +87,11 @@
                             <div class="profile-notification-scroll position-relative" style="max-height: calc(100vh - 225px)">
                                 <div class="d-flex mb-1">
                                     <div class="flex-shrink-0">
-                                        <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35" />
+                                        <img src="{{ Auth::user()->staff->profile_photo_url }}" alt="user-image" class="user-avtar wid-35" />
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-1">Carson Darrin 🖖</h6>
-                                        <span>carson.darrin@company.io</span>
+                                        <h6 class="mb-1">{{ Auth::user()->staff->name }}</h6>
+                                        <span>{{ Auth::user()->staff->email }}</span>
                                     </div>
                                 </div>
                                 <hr class="border-secondary border-opacity-50" />
