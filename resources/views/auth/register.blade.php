@@ -1,60 +1,58 @@
-<x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
 
-        <x-validation-errors class="mb-4" />
+{{-- In work, do what you enjoy. --}}
+<x-slot name="page_title">
+    Register
+</x-slot>
 
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
+<div class="auth-main">
+    <div class="auth-wrapper v1">
+        <div class="auth-form">
+            <div class="card my-5">
+                <div class="card-body">
 
-            <div>
-                <x-label for="name" value="{{ __('Name') }}" />
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            </div>
+                    <div class="text-center mb-3">
+                        <a href=""><img src="{{ asset('assets/images/logo-dark.svg') }}" alt="img" /></a>
+                    </div>
 
-            <div class="mt-4">
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            </div>
+                @if(session('success'))
+                    <div class="alert alert-info my-3" role="alert">
+                        <h5 class="alert-heading">Berhasil Daftar! Namun...</h5>
+                        <p class="mb-0">{{ session('success') }}</p>
+                    </div>
+                @elseif(session('error'))
+                    <div class="alert alert-error my-3" role="alert">
+                        <h5 class="alert-heading">Gagal!</h5>
+                        <p class="mb-0">{{ session('error') }}</p>
+                    </div>
+                @endif
 
-            <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            </div>
+                    <h4 class="text-center f-w-500 mb-3">Sign up with your work email.</h4>
 
-            <div class="mt-4">
-                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
-            </div>
-
-            @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
-                <div class="mt-4">
-                    <x-label for="terms">
-                        <div class="flex items-center">
-                            <x-checkbox name="terms" id="terms" required />
-
-                            <div class="ms-2">
-                                {!! __('I agree to the :terms_of_service and :privacy_policy', [
-                                        'terms_of_service' => '<a target="_blank" href="'.route('terms.show').'" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">'.__('Terms of Service').'</a>',
-                                        'privacy_policy' => '<a target="_blank" href="'.route('policy.show').'" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">'.__('Privacy Policy').'</a>',
-                                ]) !!}
-                            </div>
+                    <form wire:submit="register">
+                        <div class="mb-3">
+                            <x-form.input wire:model="name" placeholder="Full Name"/>
                         </div>
-                    </x-label>
+                        <div class="mb-3">
+                            <x-form.input wire:model="email" placeholder="Email Address" />
+                        </div>
+                        <div class="mb-3">
+                            <x-form.input wire:model="password" type="password" placeholder="Password" />
+                        </div>
+                        <div class="mb-3">
+                            <x-form.input wire:model="password_confirmation" type="password"
+                                          placeholder="Confirm Password" />
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary">Sign up</button>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-end mt-4">
+                            <h6 class="f-w-500 mb-0">Already have an Account?</h6>
+                            <a href="{{ route('login') }}" class="link-primary">Login here</a>
+                        </div>
+                    </form>
+
                 </div>
-            @endif
-
-            <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a>
-
-                <x-button class="ms-4">
-                    {{ __('Register') }}
-                </x-button>
             </div>
-        </form>
-    </x-authentication-card>
-</x-guest-layout>
+        </div>
+    </div>
+</div>
