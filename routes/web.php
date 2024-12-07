@@ -14,4 +14,7 @@ Route::middleware([
 
     Route::get('/', \App\Livewire\Home\Dashboard::class)->name('dashboard');
 
+    Route::get('staff', \App\Livewire\Employee\Staff::class)->name('staff');
+    Route::get('user', \App\Livewire\Employee\Users::class)->name('user');
+
 });

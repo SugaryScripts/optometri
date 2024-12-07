@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helper\HasHashid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -10,6 +11,7 @@ use Laravel\Jetstream\HasProfilePhoto;
 class Staff extends Model {
     use HasFactory;
     use HasProfilePhoto;
+    use HasHashid;
 
     protected $fillable = [
         'name',
