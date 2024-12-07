@@ -26,7 +26,10 @@
 <!-- [Head] end -->
 <!-- [Body] Start -->
 
-<body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr" data-pc-theme_contrast="" data-pc-theme="light">
+<body data-pc-preset="preset-1" data-pc-sidebar-caption="true"
+      data-pc-layout="vertical" data-pc-direction="ltr"
+      data-pc-theme_contrast="true" data-pc-theme="light">
+
 <!-- [ Pre-loader ] start -->
 <div class="loader-bg">
     <div class="loader-track">
@@ -45,11 +48,9 @@
 
 <!-- [ Main Content ] start -->
 <div class="pc-container">
-    <div class="pc-content">
-        <!-- [ Main Content ] start -->
-        {{ $slot }}
-        <!-- [ Main Content ] end -->
-    </div>
+    <!-- [ Main Content ] start -->
+    {{ $slot }}
+    <!-- [ Main Content ] end -->
 </div>
 <!-- [ Main Content ] end -->
 
