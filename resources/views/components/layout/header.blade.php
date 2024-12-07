@@ -15,7 +15,8 @@
                         <i class="ti ti-menu-2"></i>
                     </a>
                 </li>
-                <li class="pc-h-item d-none d-md-inline-flex">
+                {{-- Search --}}
+                {{--<li class="pc-h-item d-none d-md-inline-flex">
                     <form class="form-search">
                         <i class="search-icon">
                             <svg class="pc-icon">
@@ -24,7 +25,7 @@
                         </i>
                         <input type="search" class="form-control" placeholder="Ctrl + K" />
                     </form>
-                </li>
+                </li>--}}
             </ul>
         </div>
         <!-- [Mobile Media Block end] -->
@@ -32,7 +33,7 @@
             <ul class="list-unstyled">
 
                 {{-- Theme --}}
-                <li class="dropdown pc-h-item">
+                {{--<li class="dropdown pc-h-item">
                     <a
                         class="pc-head-link dropdown-toggle arrow-none me-0"
                         data-bs-toggle="dropdown"
@@ -65,7 +66,7 @@
                             <span>Default</span>
                         </a>
                     </div>
-                </li>
+                </li>--}}
 
                 <li class="dropdown pc-h-item header-user-profile">
                     <a
