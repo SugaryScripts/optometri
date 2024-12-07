@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use function Pest\Laravel\options;
 
 trait HandleComponentError {
     use WithSweetAlert;
@@ -29,12 +30,17 @@ trait HandleComponentError {
      * @return void
      */
     protected function handleComponentError(Exception $e, string $message = '', array $options = []) {
+
+        // Determine the appropriate error message
+        $errorMessage = $this->determineErrorMessage($e, $message);
+
         // Default options
         $defaultOptions = [
             'type' => $this->getErrorTypeSession(), // Default to session flash
             'level' => 'error', // error, warning, info
             'swalOptions' => [], // Additional SweetAlert options
         ];
+        // second will overwrite the first
         $options = array_merge($defaultOptions, $options);
 
         // Rollback transaction if it's a database-related error
@@ -42,9 +48,6 @@ trait HandleComponentError {
 
         // Log the error with context
         $this->logError($e);
-
-        // Determine the appropriate error message
-        $errorMessage = $this->determineErrorMessage($e, $message);
 
         // Notify based on the specified type
         $this->notifyError($errorMessage, $options);
@@ -88,11 +91,11 @@ trait HandleComponentError {
      * @param array $options Error handling options
      * @return mixed
      */
-    protected function safeDbOperation(callable $operation, array $options = []) {
+    protected function safeDbOperation(callable $operation, string $errorMessage, array $options = []) {
         try {
             return DB::transaction($operation);
         } catch (Exception $e) {
-            $this->handleComponentError($e, $options);
+            $this->handleComponentError($e, message: $errorMessage, options: $options);
             return false;
         }
     }
@@ -121,6 +124,8 @@ trait HandleComponentError {
 
 
     /**
+     * !! used by handleComponentError
+     *
      * Determine the appropriate error message
      *
      * @param Exception $e The exception
