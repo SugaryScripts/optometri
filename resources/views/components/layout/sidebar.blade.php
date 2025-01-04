@@ -29,6 +29,31 @@
                 </li>
 
 
+                <li class="pc-item pc-hasmenu {{ (request()->is('staff') || request()->is('user')) ? 'pc-trigger active' : '' }}">
+                    <a href="#!" class="pc-link">
+                        <span class="pc-micon">
+                          <svg class="pc-icon">
+                            <use xlink:href="#custom-user"></use>
+                          </svg>
+                        </span>
+                        <span class="pc-mtext">Employee</span>
+                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item {{ (request()->is('staff')) ? 'active' : '' }}">
+                            <a class="pc-link" href="{{ route('staff') }}">
+                                Staff
+                            </a>
+                        </li>
+                        <li class="pc-item {{ (request()->is('user')) ? 'active' : '' }}">
+                            <a class="pc-link" href="{{ route('user') }}">
+                                User
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
                 <li class="pc-item pc-hasmenu">
                     <a href="#!" class="pc-link">
             <span class="pc-micon">
