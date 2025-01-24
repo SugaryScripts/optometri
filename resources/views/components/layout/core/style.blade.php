@@ -27,4 +27,6 @@
 <script src="{{ asset('assets/js/tech-stack.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}" />
 
+
+@livewireStyles
 @stack('styles')

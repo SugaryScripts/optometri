@@ -14,6 +14,8 @@
 <script src="{{ asset('vendor/sweetalert2-11.14.5/sweetalert2.all.min.js') }}"></script>
 <script src="{{ asset('js/sweet-alert.js') }}"></script>
 
+@livewireScripts
+
 <script src="{{ asset('js/app.js') }}"></script>
 @stack('scripts')
 
