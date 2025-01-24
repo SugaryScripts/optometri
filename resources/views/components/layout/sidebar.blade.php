@@ -54,6 +54,26 @@
                 </li>
 
 
+                <li class="pc-item pc-hasmenu {{ (request()->is('type') || request()->is('brand')) || request()->is('product') ? 'pc-trigger active' : '' }}">
+                    <a href="#!" class="pc-link">
+                        <span class="pc-micon">
+                          <svg class="pc-icon">
+                            <use xlink:href="#custom-clipboard"></use>
+                          </svg>
+                        </span>
+                        <span class="pc-mtext">Catalog</span>
+                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item {{ (request()->is('brand')) ? 'active' : '' }}">
+                            <a class="pc-link" href="{{ route('brand') }}">
+                                Brand
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
                 <li class="pc-item pc-hasmenu">
                     <a href="#!" class="pc-link">
             <span class="pc-micon">

@@ -17,4 +17,6 @@ Route::middleware([
     Route::get('staff', \App\Livewire\Employee\Staff::class)->name('staff');
     Route::get('user', \App\Livewire\Employee\Users::class)->name('user');
 
+    Route::get('brand', \App\Livewire\Catalog\Brand::class)->name('brand');
+    Route::get('brand/form/{hashed?}', \App\Livewire\Catalog\BrandEditor::class)->name('brand.form');
 });
