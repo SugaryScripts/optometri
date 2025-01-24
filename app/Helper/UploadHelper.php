@@ -35,4 +35,13 @@ class UploadHelper {
         }
         return $relativePath;
     }
+
+    public static function getUploadedFile(string $configFilePath, ?string $hashId = null, ?string $filename = null): ?string {
+        return $filename ? self::getFilePath($configFilePath, $hashId) . '/' . $filename : null;
+    }
+
+    public static function deleteFile($relativePath, $filename): bool {
+        // $relativePath example = brand/hashed_id
+        return Storage::disk('public')->delete($relativePath . '/' . $filename);
+    }
 }
