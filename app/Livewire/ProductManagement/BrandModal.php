@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Catalog;
+namespace App\Livewire\ProductManagement;
 
 use App\Helper\UploadHelper;
 use Livewire\Attributes\On;
@@ -11,7 +11,7 @@ class BrandModal extends Component {
     public ?string $filename = null;
 
     public function render() {
-        return view('catalog.brand-modal');
+        return view('product-management.brand-modal');
     }
 
     #[On('getData')]

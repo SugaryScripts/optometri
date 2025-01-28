@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Catalog;
+namespace App\Livewire\ProductManagement;
 
 use App\Helper\HandlesSafeDbOperations;
 use App\Livewire\BaseComponent;
@@ -22,7 +22,7 @@ class BrandEditor extends BaseComponent {
     }
 
     public function render() {
-        return view('catalog.brand-editor');
+        return view('product-management.brand-editor');
     }
 
     public function save() {

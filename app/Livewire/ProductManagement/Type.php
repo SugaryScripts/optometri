@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Livewire\Catalog;
+namespace App\Livewire\ProductManagement;
 
 use App\Livewire\BaseComponent;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
+use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 
-class Brand extends BaseComponent {
+class Type extends BaseComponent {
     use WithPagination, WithoutUrlPagination;
 
     public $selectedId = -1;
@@ -24,27 +24,20 @@ class Brand extends BaseComponent {
         $this->alert('info', 'Data tersortir');
     }
 
-    public function mount() {
-        if (session()->has('status')) {
-            $this->alert('success', 'Berhasil!', [
-                'text' => session('status')
-            ]);
-        }
-    }
-
     public function render() {
-        return view('catalog.brand', [
-            'data' => $this->fetchData()
+        return view('product-management.type', [
+            'data' => $this->fetchData(),
         ]);
     }
 
     private function fetchData() {
-        return \App\Models\Brand::where(function ($query) {
-            if ($this->search != '') {
-                $query->where('name', 'like', '%'.$this->search.'%');
-                $query->orWhere('description', 'like', '%'.$this->search.'%');
-            }
-        })
+        return \App\Models\ProductType::with(['attributes', 'products'])
+            ->where(function ($query) {
+                if ($this->search != '') {
+                    $query->where('name', 'like', '%'.$this->search.'%');
+                    $query->orWhere('description', 'like', '%'.$this->search.'%');
+                }
+            })
             ->orderBy($this->sortColumn, $this->sortDirection)
             ->paginate($this->paginate_item)->onEachSide(1);
     }
@@ -69,17 +62,10 @@ class Brand extends BaseComponent {
     #[On('delete')]
     public function delete(){
         $this->safeDbOperation(function () {
-            $data = \App\Models\Brand::findByHashedOrFail($this->selectedId);
-            $filepath = config('file_path.brand') . $this->selectedId;
-            Storage::disk('public')->deleteDirectory($filepath);
+            $data = \App\Models\ProductType::findByHashedOrFail($this->selectedId);
             $data->delete();
 
             $this->alert('success', 'Data berhasil dihapus!');
         });
-    }
-
-    public function selectItem($itemId) {
-        $this->selectedId = $itemId;
-        $this->dispatch('getData', $this->selectedId);
     }
 }

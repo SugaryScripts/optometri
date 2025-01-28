@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Catalog;
+namespace App\Livewire\ProductManagement;
 
 use App\Helper\HandlesSafeDbOperations;
 use App\Helper\SlugHelper;
