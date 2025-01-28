@@ -72,7 +72,7 @@ trait HandleComponentError {
                     // Add more default SweetAlert options here
                 ], $options['swalOptions']);
 
-                $this->alert($swalOptions);
+                $this->alert($swalOptions, $options['title']);
                 break;
 
             case $this->getErrorTypeSession():

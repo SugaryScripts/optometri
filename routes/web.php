@@ -17,4 +17,14 @@ Route::middleware([
     Route::get('staff', \App\Livewire\Employee\Staff::class)->name('staff');
     Route::get('user', \App\Livewire\Employee\Users::class)->name('user');
 
+    Route::get('catalog', \App\Livewire\Home\Catalog::class)->name('catalog');
+    Route::get('catalog/{hashed}', \App\Livewire\Home\CatalogDetail::class)->name('catalog.detail');
+
+    Route::prefix('product-management')->group(function () {
+        Route::get('brand', \App\Livewire\ProductManagement\Brand::class)->name('brand');
+        Route::get('brand/form/{hashed?}', \App\Livewire\ProductManagement\BrandEditor::class)->name('brand.form');
+        Route::get('type', \App\Livewire\ProductManagement\Type::class)->name('type');
+        Route::get('product', \App\Livewire\ProductManagement\Product::class)->name('product');
+    });
+
 });

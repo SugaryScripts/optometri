@@ -9,13 +9,18 @@ use Livewire\Component;
 class BaseComponent extends Component {
     use HandleComponentError;
 
-    protected function safeDbOperation(callable $operation, ?string $customErrorMessage = null, ?string $type = null) {
+    protected function safeDbOperation(callable $operation,
+                                       ?string $customErrorMessage = null,
+                                       ?string $type = null,
+                                       ?string $title = null) {
         try {
             return DB::transaction($operation);
         } catch (\Exception $e) {
             $type = $type ?? 'swal';
             $this->handleComponentError($e, $customErrorMessage, [
-                'type' => $type
+                'type' => $type,
+                'title' => $title ?? 'Error!',
+                'text' => $e->getMessage()
             ]);
             return false;
         }
