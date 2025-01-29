@@ -27,7 +27,7 @@
                         <x-form.label value="Price" for="form.price" required/>
                         <x-form.input wire:model="form.price"/>
                     </div>
-                    @foreach($variantAttributes as $item)
+                    @foreach($form->getVariantAttributes() as $item)
                         <div class="col-md-4 mb-1">
                             <x-form.label value="{{ $item->name }}"
                                           for="form.attributeValues.{{ $item->id }}"

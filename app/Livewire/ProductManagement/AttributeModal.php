@@ -35,17 +35,16 @@ class AttributeModal extends BaseComponent {
     public function save() {
         if (isset($this->form->attribute)){
             if ($this->form->update()){
-                $this->alert('success', 'Berhasil!', [
-                    'text' => 'Data updated successfully'
-                ]);
+                $message = 'Data updated successfully';
+                $this->dispatch('sessionFlash', $message);
             }
         }else {
             if ($this->form->store()){
-                $this->alert('success', 'Berhasil!', [
-                    'text' => 'Data created successfully'
-                ]);
+                $message = 'Data created successfully';
+                $this->dispatch('sessionFlash', $message);
             }
         }
+
         $this->dispatch('closeModal');
     }
 

@@ -9,9 +9,9 @@ use Livewire\Attributes\Validate;
 class Login extends BaseComponent {
 
     #[Validate('required|email')]
-    public string $email;
+    public string $email = 'admin@mail.com';
     #[Validate('required')]
-    public string $password;
+    public string $password = 'admin';
     #[Validate('nullable|boolean')]
     public ?bool $remember = false;
 

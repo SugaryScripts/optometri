@@ -32,8 +32,6 @@ class ProductForm extends Form {
     public array $selectedVariantAttributes = [];
     #[Validate]
     public array $attributeValues = [];
-    //#[Validate]
-    //public array $variants = [];
     #[Validate]
     public $image_file = [];
 
@@ -41,8 +39,9 @@ class ProductForm extends Form {
     public $uploaded_image = [];
     public $uploaded_image_name = [];
 
-    public function rules() {
-        return [
+    public function rules()
+    {
+        $rules = [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'sku' => 'required|string|unique:products,sku' .
@@ -58,20 +57,41 @@ class ProductForm extends Form {
                     $fail('The selected product type is invalid.');
                 }
             }],
-
-            'attributeValues.*' => 'nullable',
-            /*'variants.*.sku' => 'required|distinct|string',
-            'variants.*.price' => 'required|numeric|min:0',
-            'variants.*.attributeValues.*' => 'nullable',*/
-
             'image_file.*' => 'nullable|image|max:5120',
         ];
-    }
 
+        // Add dynamic validation rules for attributes
+        if ($this->product_type_id) {
+            $productType = ProductType::findByHashed($this->product_type_id);
+            if ($productType) {
+                foreach ($productType->attributes as $attribute) {
+                    $attributeRule = $attribute->required ? 'required' : 'nullable';
+
+                    // Add data type validation
+                    switch ($attribute->data_type) {
+                        case 'number':
+                            $attributeRule .= '|numeric';
+                            break;
+                        case 'date':
+                            $attributeRule .= '|date';
+                            break;
+                        case 'boolean':
+                            $attributeRule .= '|boolean';
+                            break;
+                        default:
+                            $attributeRule .= '|string';
+                    }
+
+                    $rules["attributeValues.{$attribute->id}"] = $attributeRule;
+                }
+            }
+        }
+
+        return $rules;
+    }
     public function resetAttributes() {
         $this->selectedVariantAttributes = [];
         $this->attributeValues = [];
-        $this->variants = [];
     }
 
     public function setData(\App\Models\Product $product): void {
@@ -108,26 +128,6 @@ class ProductForm extends Form {
         foreach ($nonVariantAttributeValues as $value) {
             $this->attributeValues[$value->product_attribute_id] = $value->value;
         }
-
-        // Load variants with their attribute values
-        $this->variants = $product->variants->map(function ($variant) {
-            $variantData = [
-                'id' => $variant->hashed,
-                'sku' => $variant->sku,
-                'price' => $variant->price,
-                'attributeValues' => []
-            ];
-
-            foreach ($this->selectedVariantAttributes as $attributeId) {
-                $value = $variant->attributeValues()
-                    ->where('product_attribute_id', $attributeId)
-                    ->first();
-
-                $variantData['attributeValues'][$attributeId] = $value?->value ?? '';
-            }
-
-            return $variantData;
-        })->toArray();
     }
 
     public function store(): bool {
@@ -172,6 +172,71 @@ class ProductForm extends Form {
                 $this->uploaded_image_id[] = $file->hashed;
                 $this->uploaded_image[] = $filename;
                 $this->uploaded_image_name[] = $original_name;
+            }
+
+        }, 'Failed to create new product');
+    }
+
+    public function update(): bool {
+        $this->validate();
+
+        /* Check image if exists  */
+        if (!$this->uploaded_image && !$this->image_file) {
+            $this->addError('image_file', 'Gambar tidak boleh kosong');
+            return false;
+        }
+
+        return $this->safeDbOperation(function () {
+
+            $brandId = \App\Models\Brand::decodeHashid($this->brand_id);
+            $productTypeId = ProductType::decodeHashid($this->product_type_id);
+
+            $this->product->update([
+                'name' => $this->name,
+                'sku' => $this->sku,
+                'price' => $this->price,
+                'description' => $this->description,
+                'product_type_id' => $productTypeId,
+                'brand_id' => $brandId
+            ]);
+
+            Debugbar::info('Updated product');
+
+
+            $IMAGE_PATH = config('file_path.product');
+            foreach ($this->image_file as $item) {
+                $relativePath = UploadHelper::ensureFileDirectory($IMAGE_PATH, $this->product->hashed);
+                $filename = UploadHelper::store($item, $relativePath);
+                $original_name = UploadHelper::getOriginalName($item);
+
+                $file = ProductImage::create([
+                    'file_name' => $filename,
+                    'original_name' => $original_name,
+                    'product_id' => $this->product->id,
+                    'is_cover' => $this->image_file[0] == $item
+                ]);
+
+                $this->uploaded_image_id[] = $file->hashed;
+                $this->uploaded_image[] = $filename;
+                $this->uploaded_image_name[] = $original_name;
+            }
+
+            // Update product type variant attributes
+            $productType = $this->product->productType;
+            $productType->variantAttributes()->sync($this->selectedVariantAttributes);
+
+            // Update product attributes (non-variant)
+            $this->product->attributeValues()
+                ->whereNotIn('product_attribute_id', $this->selectedVariantAttributes)
+                ->delete();
+
+            foreach ($this->attributeValues as $attributeId => $value) {
+                if (!empty($value)) {
+                    $this->product->attributeValues()->create([
+                        'product_attribute_id' => $attributeId,
+                        'value' => $value
+                    ]);
+                }
             }
 
         }, 'Failed to create new product');

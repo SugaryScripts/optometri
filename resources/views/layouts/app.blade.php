@@ -28,7 +28,7 @@
 
 <body data-pc-preset="preset-1" data-pc-sidebar-caption="true"
       data-pc-layout="vertical" data-pc-direction="ltr"
-      data-pc-theme_contrast="true" data-pc-theme="light">
+      data-pc-theme_contrast="true" data-pc-theme="dark">
 
 <!-- [ Pre-loader ] start -->
 <div class="loader-bg">

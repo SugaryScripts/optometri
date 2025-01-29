@@ -96,9 +96,11 @@ class ProductEditor extends BaseComponent {
     }
 
     public function loadProductTypeAttributes() {
-        $productType = $this->form->product->productType;
-        if ($productType) {
-            $this->availableAttributes = $productType->attributes;
+        if (isset($this->form->product)){
+            $productType = $this->form->product->productType;
+            if ($productType) {
+                $this->availableAttributes = $productType->attributes;
+            }
         }
     }
 }

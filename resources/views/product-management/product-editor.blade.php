@@ -75,7 +75,7 @@
                             </div>
 
                             <!-- Product Attributes Section -->
-                            @if($availableAttributes->isNotEmpty())
+                            @if(count($availableAttributes))
                                 <div class="col-12 mt-3">
                                     <hr>
                                     <h5>Additional Attributes</h5>
@@ -95,7 +95,7 @@
                             @endif
 
                         <!-- Variant Attribute Selection -->
-                            @if($availableAttributes->isNotEmpty())
+                            @if(count($availableAttributes))
                                 <div class="col-12 mt-3">
                                     <hr>
                                     <h5>Select Variant Attributes</h5>

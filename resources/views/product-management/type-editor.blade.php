@@ -35,12 +35,12 @@
                     <form wire:submit="save">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <x-form.label for="name" value="{{ __('Name') }}" required/>
-                                <x-form.input wire:model="form.name" placeholder="Enter Brand Name" />
+                                <x-form.label for="name" value="{{ __('Type Name') }}" required/>
+                                <x-form.input wire:model="form.name" placeholder="Enter Type Name" />
                             </div>
                             <div class="col-md-6 mb-3">
                                 <x-form.label for="description" value="{{ __('Description') }}"/>
-                                <x-form.input wire:model="form.description" placeholder="Enter Brand Description" />
+                                <x-form.input wire:model="form.description" placeholder="Enter Type Description" />
                             </div>
                             <div class="col-md-12">
                                 <div class="text-end btn-page mt-4">

@@ -45,7 +45,7 @@ class TypeEditor extends BaseComponent {
 
             $result = $this->form->store();
             $message = 'Data created successfully';
-            if ($result){
+            if ($result) {
                 session()->flash('status', $message);
                 $this->redirectRoute('type.form', ['hashed' => $this->form->type->hashed]);
             }
@@ -83,6 +83,13 @@ class TypeEditor extends BaseComponent {
     public function selectItem($itemId) {
         $this->selectedId = $itemId;
         $this->dispatch('getData', $this->selectedId);
+    }
+
+    #[On('sessionFlash')]
+    public function sessionFlash($message) {
+        session()->flash('status', $message);
+        $this->redirectRoute('type.form', ['hashed' => $this->form->type->hashed]);
+        // TODO: Fix alert create
     }
 
 }

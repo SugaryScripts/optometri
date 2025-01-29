@@ -13,7 +13,8 @@ class DummySeeder extends Seeder
         $this->call([
             StaffSeeder::class,
             BrandSeeder::class,
-            ProductSeeder::class,
+            //ProductSeeder::class,
+            SecondProductSeeder::class,
             ProductImageSeeder::class,
         ]);
     }
