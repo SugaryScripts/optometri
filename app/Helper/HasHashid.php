@@ -37,4 +37,10 @@ trait HasHashid {
 
         return static::findOrFail($id);
     }
+
+    // Helper method to decode hashid
+    public static function decodeHashid($hashid) {
+        $decoded = Hashids::decode($hashid);
+        return $decoded[0] ?? null;
+    }
 }

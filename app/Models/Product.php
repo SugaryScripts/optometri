@@ -6,6 +6,7 @@ use App\Helper\HasHashid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -14,7 +15,7 @@ class Product extends Model {
     use HasFactory;
     use HasHashid;
 
-    protected $fillable = ['name', 'description', 'sku', 'price', 'product_type_id'];
+    protected $fillable = ['name', 'description', 'sku', 'price', 'product_type_id', 'brand_id'];
 
     /**
      * Get the product type this product belongs to.
@@ -46,6 +47,12 @@ class Product extends Model {
 
     public function images(): HasMany {
         return $this->hasMany(ProductImage::class);
+    }
+
+    // New relationship for variant attributes
+    public function variantAttributes(): BelongsToMany {
+        return $this->belongsToMany(ProductAttribute::class, 'product_variant_attributes')
+            ->withTimestamps();
     }
 
     // Get the cover image (the main image for the product)

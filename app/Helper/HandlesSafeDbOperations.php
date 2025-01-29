@@ -27,9 +27,10 @@ trait HandlesSafeDbOperations {
         }
     }
     // TODO: redundant function
-    protected function safeDbOperationNotifiable(callable $operation, ?string $customErrorMessage = null) {
+    protected function safeDbOperationNotifiable(callable $operation, ?string $customErrorMessage = null): bool {
         try {
-            return DB::transaction($operation);
+            DB::transaction($operation);
+            return true;
         } catch (\Exception $e) {
             $this->component->dispatch('handle-error', [
                 'error' => $e,

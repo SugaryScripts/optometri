@@ -10,7 +10,7 @@
             <div class="row align-items-center">
                 <div class="col-md-12">
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript: void(0)">Catalog</a></li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0)">Product Management</a></li>
                         <li class="breadcrumb-item" aria-current="page">Type</li>
                     </ul>
                 </div>
@@ -35,12 +35,12 @@
                     <h5 class="mb-0">Product Type List</h5>
                     <div class="d-flex flex-column flex-md-row pt-3 pt-md-0">
                         <div class="btn-group flex-wrap">
-                            <button class="btn btn-primary">
+                            <a class="btn btn-primary" href="{{ route('type.form') }}">
                                 <i class="bx bx-plus bx-sm me-sm-2"></i>
                                 <span class="d-none d-sm-inline-block">
                                      Add New Record
                                  </span>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Description</th>
-                                <th class="text-end">Action</th>
+                                <th class="text-center">Action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -93,19 +93,24 @@
                                     <td>
                                         {!! $item->description !!}
                                     </td>
-                                    <td>
-                                        <a href="#" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-eye f-20"></i>
-                                        </a>
-                                        <a href="#" class="avtar avtar-xs btn-link-secondary">
-                                            <i class="ti ti-edit f-20"></i>
-                                        </a>
-                                        <a href="" class="avtar avtar-xs btn-link-secondary"
-                                           onclick="event.preventDefault()"
-                                           wire:click="deleteConfirm('{{ $item->hashed }}')"
-                                        >
-                                            <i class="ti ti-trash f-20"></i>
-                                        </a>
+                                    <td class="text-center">
+                                        <ul class="list-inline me-auto mb-0">
+                                            <li class="list-inline-item align-bottom" data-bs-toggle="tooltip" title="Edit">
+                                                <a href="{{ route('type.form', $item->hashed) }}"
+                                                   class="avtar avtar-xs btn-link-success btn-pc-default">
+                                                    <i class="ti ti-edit-circle f-18"></i>
+                                                </a>
+                                            </li>
+                                            <li class="list-inline-item align-bottom" data-bs-toggle="tooltip" title="Delete">
+                                                <a href="" class="avtar avtar-xs btn-link-danger btn-pc-default"
+                                                   onclick="event.preventDefault()"
+                                                   wire:click="deleteConfirm('{{ $item->hashed }}')"
+                                                >
+                                                    <i class="ti ti-trash f-18"></i>
+                                                </a>
+
+                                            </li>
+                                        </ul>
                                     </td>
                                 </tr>
                             @endforeach

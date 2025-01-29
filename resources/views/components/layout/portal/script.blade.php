@@ -21,5 +21,5 @@
 
 <x-layout.preset-theme />
 <x-layout.customizer />
-
+@livewireScripts
 @stack('scripts')
