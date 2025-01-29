@@ -45,6 +45,21 @@ return new class extends Migration {
 
             $table->timestamps();
         });
+
+        Schema::create('product_variant_attributes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_id')
+                ->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('product_attribute_id')
+                ->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->timestamps();
+
+            $table->unique(['product_id', 'product_attribute_id']);
+        });
     }
 
     /**

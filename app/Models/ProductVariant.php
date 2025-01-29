@@ -12,7 +12,7 @@ class ProductVariant extends Model {
     use HasFactory;
     use HasHashid;
 
-    protected $fillable = ['sku', 'price', 'product_id'];
+    protected $fillable = ['name', 'sku', 'price', 'product_id'];
 
     /**
      * Get the product this variant belongs to.

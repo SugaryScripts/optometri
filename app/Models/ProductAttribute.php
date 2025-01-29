@@ -6,6 +6,7 @@ use App\Helper\HasHashid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductAttribute extends Model {
@@ -26,5 +27,11 @@ class ProductAttribute extends Model {
      */
     public function attributeValues(): HasMany {
         return $this->hasMany(ProductAttributeValue::class);
+    }
+
+    // New relationship for products using this attribute as variant
+    public function variantProducts(): BelongsToMany {
+        return $this->belongsToMany(Product::class, 'product_variant_attributes')
+            ->withTimestamps();
     }
 }
