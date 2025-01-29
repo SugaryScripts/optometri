@@ -26,6 +26,7 @@ Route::middleware([
         Route::get('type', \App\Livewire\ProductManagement\Type::class)->name('type');
         Route::get('type/form/{hashed?}', \App\Livewire\ProductManagement\TypeEditor::class)->name('type.form');
         Route::get('product', \App\Livewire\ProductManagement\Product::class)->name('product');
+        Route::get('product/form/{hashed?}', \App\Livewire\ProductManagement\ProductEditor::class)->name('product.form');
     });
 
 });
