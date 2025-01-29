@@ -14,13 +14,19 @@ class ProductEditor extends BaseComponent {
 
     public ProductForm $form;
 
-    public $brands;
-    public $productTypes;
+    public $brands = [];
+    public $productTypes = [];
+
+    public $availableAttributes = [];
 
     public function mount(string $hashed = '') {
         if ($hashed) {
             $data = \App\Models\Product::findByHashedOrFail($hashed);
             $this->form->setData($data);
+
+            if ($this->form->product_type_id) {
+                $this->loadProductTypeAttributes();
+            }
         }
 
         $this->brands = \App\Models\Brand::all();
@@ -33,16 +39,23 @@ class ProductEditor extends BaseComponent {
         }
     }
 
+    public function updatedFormProductTypeId() {
+        $this->form->resetAttributes();
+        $this->loadProductTypeAttributes();
+    }
+
     public function render() {
-        return view('product-management.product-editor');
+        return view('product-management.product-editor', [
+            'variants' => $this->form->product?->variants ?? collect()
+        ]);
     }
 
     public function save() {
-        if (isset($this->form->product)){
-            //$result = $this->form->update();
+        if (isset($this->form->product)) {
+            $result = $this->form->update();
             $message = 'Data updated successfully';
             Debugbar::info($message);
-        }else {
+        } else {
             $result = $this->form->store();
             $message = 'Data created successfully';
             Debugbar::info($message);
@@ -50,7 +63,7 @@ class ProductEditor extends BaseComponent {
 
         //Debugbar::info('Result success? ' . json_encode($result));
 
-        if ($result){
+        if ($result) {
             session()->flash('status', $message);
             $this->redirectRoute('product.form', ['hashed' => $this->form->product->hashed]);
         }
@@ -72,13 +85,20 @@ class ProductEditor extends BaseComponent {
     }
 
     #[On('delete_image')]
-    public function delete_image(){
-        if (isset($this->form->product) && $this->form->deleteImage()){
+    public function delete_image() {
+        if (isset($this->form->product) && $this->form->deleteImage()) {
             $message = 'Data berhasil dihapus!';
             $this->alert('success', $message);
-        }else {
+        } else {
             $message = 'Data gagal dihapus!';
             $this->alert('error', $message);
+        }
+    }
+
+    public function loadProductTypeAttributes() {
+        $productType = $this->form->product->productType;
+        if ($productType) {
+            $this->availableAttributes = $productType->attributes;
         }
     }
 }

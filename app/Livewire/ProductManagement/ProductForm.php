@@ -29,9 +29,11 @@ class ProductForm extends Form {
     #[Validate]
     public ?string $product_type_id = null;
     #[Validate]
-    public array $attributeValues = [];
+    public array $selectedVariantAttributes = [];
     #[Validate]
-    public array $variants = [];
+    public array $attributeValues = [];
+    //#[Validate]
+    //public array $variants = [];
     #[Validate]
     public $image_file = [];
 
@@ -46,33 +48,30 @@ class ProductForm extends Form {
             'sku' => 'required|string|unique:products,sku' .
                 (isset($this->product) ? ',' . $this->product->id : ''),
             'price' => 'required|numeric|min:0',
-            'brand_id' => ['required', function($attribute, $value, $fail) {
+            'brand_id' => ['required', function ($attribute, $value, $fail) {
                 if (!\App\Models\Brand::findByHashed($value)->exists()) {
                     $fail('The selected brand is invalid.');
                 }
             }],
-            'product_type_id' => ['required', function($attribute, $value, $fail) {
+            'product_type_id' => ['required', function ($attribute, $value, $fail) {
                 if (!ProductType::findByHashed($value)->exists()) {
                     $fail('The selected product type is invalid.');
                 }
             }],
 
             'attributeValues.*' => 'nullable',
-            'variants.*.sku' => 'required|distinct|string',
+            /*'variants.*.sku' => 'required|distinct|string',
             'variants.*.price' => 'required|numeric|min:0',
-            'variants.*.attributeValues.*' => 'nullable',
+            'variants.*.attributeValues.*' => 'nullable',*/
 
             'image_file.*' => 'nullable|image|max:5120',
         ];
     }
 
-    public function validationAttributes(): array {
-        return [
-            'name' => 'Product Name',
-            'sku' => 'SKU',
-            'price' => 'Price',
-            'product_type_id' => 'Product Type'
-        ];
+    public function resetAttributes() {
+        $this->selectedVariantAttributes = [];
+        $this->attributeValues = [];
+        $this->variants = [];
     }
 
     public function setData(\App\Models\Product $product): void {
@@ -87,7 +86,7 @@ class ProductForm extends Form {
 
         foreach ($product->images as $item) {
             $this->uploaded_image_id[] = $item->hashed;
-            $this->uploaded_image[] = UploadHelper::getUploadedFile(config('file_path.product'), $product->hashed,  $item->file_name);
+            $this->uploaded_image[] = UploadHelper::getUploadedFile(config('file_path.product'), $product->hashed, $item->file_name);
             $this->uploaded_image_name[] = $item->original_name;
         }
 
@@ -96,16 +95,38 @@ class ProductForm extends Form {
             ->pluck('value', 'product_attribute_id')
             ->toArray();
 
-        // Load variants with their attributes
+        // Load selected variant attributes
+        $this->selectedVariantAttributes = $product->variantAttributes()
+            ->pluck('product_attributes.id')
+            ->toArray();
+
+        // Load non-variant attribute values
+        $nonVariantAttributeValues = $product->attributeValues()
+            ->whereNotIn('product_attribute_id', $this->selectedVariantAttributes)
+            ->get();
+
+        foreach ($nonVariantAttributeValues as $value) {
+            $this->attributeValues[$value->product_attribute_id] = $value->value;
+        }
+
+        // Load variants with their attribute values
         $this->variants = $product->variants->map(function ($variant) {
-            return [
+            $variantData = [
                 'id' => $variant->hashed,
                 'sku' => $variant->sku,
                 'price' => $variant->price,
-                'attributeValues' => $variant->attributeValues
-                    ->pluck('value', 'product_attribute_id')
-                    ->toArray()
+                'attributeValues' => []
             ];
+
+            foreach ($this->selectedVariantAttributes as $attributeId) {
+                $value = $variant->attributeValues()
+                    ->where('product_attribute_id', $attributeId)
+                    ->first();
+
+                $variantData['attributeValues'][$attributeId] = $value?->value ?? '';
+            }
+
+            return $variantData;
         })->toArray();
     }
 
@@ -113,7 +134,7 @@ class ProductForm extends Form {
         $this->validate();
 
         /* Check image if exists  */
-        if (!$this->uploaded_image && !$this->image_file){
+        if (!$this->uploaded_image && !$this->image_file) {
             $this->addError('image_file', 'Gambar tidak boleh kosong');
             return false;
         }

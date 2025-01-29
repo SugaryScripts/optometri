@@ -73,14 +73,55 @@
                                     </span>
                                 @endif
                             </div>
-                            @if(isset($form->product))
-                                @foreach($form->attributeValues as $item)
-                                    <div class="col-md-3 mb-3">
-                                        <x-form.label for="test" value="{{ __('Price') }}" required/>
-                                        <x-form.input name="test" type="number" placeholder="Enter Price" />
-                                    </div>
+
+                            <!-- Product Attributes Section -->
+                            @if($availableAttributes->isNotEmpty())
+                                <div class="col-12 mt-3">
+                                    <hr>
+                                    <h5>Additional Attributes</h5>
+                                </div>
+                                @foreach($availableAttributes as $attribute)
+                                    @if(!in_array($attribute->id, $form->selectedVariantAttributes))
+                                        <div class="col-md-3 mb-3">
+                                            <x-form.label for="form.attributeValues.{{ $attribute->id }}"
+                                                          value="{{ $attribute->name }}"
+                                                          :required="$attribute->required"/>
+                                            <x-form.input wire:model="form.attributeValues.{{ $attribute->id }}"
+                                                          type="{{ $attribute->data_type }}"
+                                                          placeholder="Enter {{ $attribute->name }}" />
+                                        </div>
+                                    @endif
                                 @endforeach
                             @endif
+
+                        <!-- Variant Attribute Selection -->
+                            @if($availableAttributes->isNotEmpty())
+                                <div class="col-12 mt-3">
+                                    <hr>
+                                    <h5>Select Variant Attributes</h5>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <div class="row">
+                                        @foreach($availableAttributes as $attribute)
+                                            <div class="col-md-3 mb-2">
+                                                <label class="form-check">
+                                                    <input type="checkbox"
+                                                           class="form-check-input"
+                                                           wire:model.live="form.selectedVariantAttributes"
+                                                           value="{{ $attribute->id }}">
+                                                    <span class="form-check-label">{{ $attribute->name }}</span>
+                                                </label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <x-form.error for="form.selectedVariantAttributes" />
+                                </div>
+                            @endif
+
+                            <div class="col-12 mt-3">
+                                <hr>
+                                <h5>Images</h5>
+                            </div>
                             <div class="col-md-12 mb-3">
                                 <div class="mb-3">
                                     <x-form.label for="form.image_file" value="{{ __('Upload Image') }}" required/>
@@ -109,27 +150,6 @@
                                 @endif
                             </div>
 
-
-                            @if(isset($form->product))
-                            <!-- Product Attributes Section -->
-                            <div class="col-12">
-                                <h5>Product Attributes</h5>
-                            </div>
-                            @foreach($form->product->productType['attributes'] as $attribute)
-                                <div class="col-md-3 mb-3">
-                                    <x-form.label
-                                        for="attributeValues.{{ $attribute->id }}"
-                                        value="{{ $attribute->name }}"
-                                        required="{{ $attribute->required }}"
-                                    />
-                                    <x-form.input
-                                        wire:model="attributeValues.{{ $attribute->id }}"
-                                        placeholder="Enter {{ $attribute->name }}"
-                                    />
-                                </div>
-                            @endforeach
-                            @endif
-
                             <div class="col-md-12">
                                 <div class="text-end btn-page mt-4">
                                     <a href="{{ route('product') }}" class="btn btn-outline-secondary">Cancel</a>
@@ -141,6 +161,90 @@
                 </div>
             </div>
         </div>
+
+        <!-- List variants -->
+        @if(isset($form->product))
+            <div class="col-sm-12">
+                <div class="card">
+                    {{-- Header --}}
+                    <div class="card-header d-flex flex-column flex-md-row align-items-center justify-content-between">
+                        <h5 class="mb-0">Variant List</h5>
+                        <div class="d-flex flex-column flex-md-row pt-3 pt-md-0">
+                            <div class="btn-group flex-wrap">
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#variant-modal">
+                                    <i class="bx bx-plus bx-sm me-sm-2"></i>
+                                    <span class="d-none d-sm-inline-block">
+                                     Add New Variant
+                                 </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- End Header --}}
+
+                    <div class="card-body pt-3">
+                        <div class="table-responsive mt-2">
+                            <table class="table table-hover" id="pc-dt-simple">
+                                <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @forelse($variants as $item)
+                                    <tr>
+                                        <td>
+                                            {{ $item->sku }}
+                                        </td>
+                                        <td>
+                                            {{ $item->name }}
+                                        </td>
+                                        <td>
+                                            {{ $item->price }}
+                                        </td>
+                                        <td class="text-center">
+                                            <ul class="list-inline me-auto mb-0">
+                                                <li class="list-inline-item align-bottom" data-bs-toggle="tooltip" title="Edit">
+                                                    <a href="" onclick="event.preventDefault()"
+                                                       class="avtar avtar-xs btn-link-success btn-pc-default"
+                                                       wire:click="selectItem('{{ $item->hashed }}')"
+                                                    >
+                                                        <i class="ti ti-edit-circle f-18"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="list-inline-item align-bottom" data-bs-toggle="tooltip" title="Delete">
+                                                    <a href="" class="avtar avtar-xs btn-link-danger btn-pc-default"
+                                                       onclick="event.preventDefault()"
+                                                       wire:click="deleteConfirm('{{ $item->hashed }}')"
+                                                    >
+                                                        <i class="ti ti-trash f-18"></i>
+                                                    </a>
+
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            No entries found
+                                        </td>
+                                    </tr>
+                                @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <livewire:product-management.variant-modal
+                :hashed="$form->product->hashed"/>
+    @endif
+
         <!-- [ sample-page ] end -->
     </div>
     <!-- [ Main Content ] end -->

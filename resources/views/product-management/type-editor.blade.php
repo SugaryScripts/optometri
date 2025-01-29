@@ -44,7 +44,7 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="text-end btn-page mt-4">
-                                    <a href="{{ route('brand') }}" class="btn btn-outline-secondary">Cancel</a>
+                                    <a href="{{ route('type') }}" class="btn btn-outline-secondary">Cancel</a>
                                     <button class="btn btn-primary" type="submit">Save</button>
                                 </div>
                             </div>
