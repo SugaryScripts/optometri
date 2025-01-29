@@ -14,7 +14,7 @@ class Product extends Model {
     use HasFactory;
     use HasHashid;
 
-    protected $fillable = ['name', 'description', 'sku', 'price', 'product_type_id'];
+    protected $fillable = ['name', 'description', 'sku', 'price', 'product_type_id', 'brand_id'];
 
     /**
      * Get the product type this product belongs to.
